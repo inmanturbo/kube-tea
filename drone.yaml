@@ -1,0 +1,8 @@
+service:
+  type: NodePort
+sourceControl:
+  provider: "gitea"
+  gitea:
+    server: ""
+  server:
+    adminUser: ""

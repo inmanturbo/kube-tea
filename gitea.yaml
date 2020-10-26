@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: gitea
+  name: gitea
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gitea
+  template:
+    metadata:
+      labels:
+        app: gitea
+    spec:
+      volumes:
+        - name: gitea-volume
+          persistentVolumeClaim:
+            claimName: gitea-pvc-1
+      containers:
+      - image: gitea/gitea:latest
+        name: gitea
+        ports:
+          - containerPort: 3000
+            name: gitea
+          - containerPort: 22
+            name: git-ssh
+        volumeMounts:
+          - mountPath: "/data"
+            name: gitea-volume
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gitea-pvc-1
+spec:
+  storageClassName: freenas-nfs-csi
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
